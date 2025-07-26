@@ -63,8 +63,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 							error
 								? `${inputId}-error`
 								: helperText
-								? `${inputId}-helper`
-								: undefined
+									? `${inputId}-helper`
+									: undefined
 						}
 						{...props}
 					/>

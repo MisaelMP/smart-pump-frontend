@@ -207,14 +207,17 @@ export const useAuthStore = create<AuthStore>()(
 				}
 
 				// Check session every 5 minutes
-				const interval = setInterval(async () => {
-					const isValid = await get().checkAuthStatus();
+				const interval = setInterval(
+					async () => {
+						const isValid = await get().checkAuthStatus();
 
-					if (!isValid) {
-						console.warn('Session expired, logging out user');
-						await get().logout();
-					}
-				}, 5 * 60 * 1000); // 5 minutes
+						if (!isValid) {
+							console.warn('Session expired, logging out user');
+							await get().logout();
+						}
+					},
+					5 * 60 * 1000
+				); // 5 minutes
 
 				set({ sessionCheckInterval: interval });
 			},
@@ -231,14 +234,14 @@ export const useAuthStore = create<AuthStore>()(
 		{
 			name: 'smart-pump-auth',
 			storage: createJSONStorage(() => localStorage),
-			partialize: (state) => ({
+			partialize: state => ({
 				// Only persist essential auth state
 				user: state.user,
 				isAuthenticated: state.isAuthenticated,
 				csrfToken: state.csrfToken,
 				// Don't persist loading states or errors
 			}),
-			onRehydrateStorage: () => (state) => {
+			onRehydrateStorage: () => state => {
 				// Validate session on app startup
 				if (state?.isAuthenticated) {
 					state.validateToken().catch(() => {

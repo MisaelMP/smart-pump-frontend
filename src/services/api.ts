@@ -34,7 +34,7 @@ class ApiService {
 	private setupInterceptors(): void {
 		// Request interceptor
 		this.client.interceptors.request.use(
-			(config) => {
+			config => {
 				// Add CSRF token to state-changing requests
 				if (
 					this.csrfToken &&
@@ -52,7 +52,7 @@ class ApiService {
 
 				return config;
 			},
-			(error) => {
+			error => {
 				return Promise.reject(this.createHttpError(error));
 			}
 		);
