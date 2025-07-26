@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { useAuthActions } from '@/stores/authStore';
+import { useLogin } from '@/hooks/useAuth';
 import { LoginFormSchema, type LoginFormData, ROUTES } from '@/types';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -12,9 +12,8 @@ import Logo from '@/components/ui/Logo';
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAuthActions();
+  const loginMutation = useLogin();
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -27,12 +26,34 @@ const LoginForm: React.FC = () => {
     mode: 'onChange',
   });
 
+  // Log test credentials in development mode
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      console.log(
+        '%c🔐 SMART Pump - Test Accounts Available',
+        'color: #3b82f6; font-weight: bold; font-size: 14px;'
+      );
+      console.log(
+        '%cCheck backend console logs for actual credentials',
+        'color: #059669; font-weight: bold;'
+      );
+      console.log('📧 john.doe@example.com');
+      console.log('📧 jane.smith@example.com (inactive)');
+      console.log('📧 bob.wilson@example.com');
+      console.log('📧 alice.brown@example.com');
+      console.log('📧 charlie.davis@example.com');
+      console.log(
+        '%c⚠️ Passwords are stored in environment variables',
+        'color: #dc2626; font-style: italic;'
+      );
+    }
+  }, []);
+
   const onSubmit = async (data: LoginFormData) => {
-    setIsSubmitting(true);
     clearErrors();
 
     try {
-      await login(data);
+      await loginMutation.mutateAsync(data);
 
       toast.success('Welcome back!', {
         description: 'You have been successfully logged in.',
@@ -58,8 +79,6 @@ const LoginForm: React.FC = () => {
       toast.error('Login Failed', {
         description: errorMessage,
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -135,11 +154,11 @@ const LoginForm: React.FC = () => {
             <Button
               type='submit'
               size='lg'
-              isLoading={isSubmitting}
-              disabled={!isValid || isSubmitting}
+              isLoading={loginMutation.isPending}
+              disabled={!isValid || loginMutation.isPending}
               className='w-full'
             >
-              {isSubmitting ? 'Signing In...' : 'Sign In'}
+              {loginMutation.isPending ? 'Signing In...' : 'Sign In'}
             </Button>
           </form>
 
@@ -163,7 +182,7 @@ const LoginForm: React.FC = () => {
               <div>📧 henderson.briggs@geeknet.net</div>
               <div>🔑 23derd*334</div>
               <div className='pt-1 text-blue-600'>
-                (More test accounts available in the console)
+                (Original exercise passwords - more available in console)
               </div>
             </div>
           </div>

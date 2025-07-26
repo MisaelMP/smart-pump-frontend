@@ -6,7 +6,8 @@ import {
   Navigate,
 } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import { useAuth, useAuthActions } from '@/stores/authStore';
+import { useAuth } from '@/stores/authStore';
+import { useValidateToken } from '@/hooks/useAuth';
 import { ROUTES } from '@/types';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -18,7 +19,7 @@ const NotFound = React.lazy(() => import('@/components/common/NotFound'));
 
 const App: React.FC = () => {
   const { isAuthenticated, user } = useAuth();
-  const { validateToken } = useAuthActions();
+  const { refetch: validateToken } = useValidateToken();
 
   useEffect(() => {
     // Validate token on app startup if user appears to be authenticated
