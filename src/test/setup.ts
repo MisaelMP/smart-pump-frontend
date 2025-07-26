@@ -7,19 +7,19 @@ expect.extend(matchers);
 
 // Clean up after each test case (e.g. clearing jsdom)
 afterEach(() => {
-	cleanup();
+  cleanup();
 });
 
 // Mock window.history for tests
 Object.defineProperty(window, 'history', {
-	value: {
-		back: () => {},
-		forward: () => {},
-		go: () => {},
-		length: 1,
-		pushState: () => {},
-		replaceState: () => {},
-		state: null,
-	},
-	writable: true,
+  value: {
+    back: () => {},
+    forward: () => {},
+    go: () => {},
+    length: 1,
+    pushState: () => {},
+    replaceState: () => {},
+    state: null,
+  },
+  writable: true,
 });
