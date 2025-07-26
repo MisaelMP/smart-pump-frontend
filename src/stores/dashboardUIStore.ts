@@ -22,11 +22,11 @@ const INITIAL_STATE: DashboardUIState = {
 export const useDashboardUIStore = create<DashboardUIStore>((set, get) => ({
   ...INITIAL_STATE,
 
-  setActiveSection: (section) => {
+  setActiveSection: section => {
     set({ activeSection: section });
   },
 
-  setShowUserMenu: (show) => {
+  setShowUserMenu: show => {
     set({ showUserMenu: show });
   },
 
@@ -42,6 +42,7 @@ export const useDashboardUI = () => {
 };
 
 export const useDashboardUIActions = () => {
-  const { setActiveSection, setShowUserMenu, toggleUserMenu } = useDashboardUIStore();
+  const { setActiveSection, setShowUserMenu, toggleUserMenu } =
+    useDashboardUIStore();
   return { setActiveSection, setShowUserMenu, toggleUserMenu };
 };

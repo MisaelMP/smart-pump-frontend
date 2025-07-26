@@ -64,7 +64,9 @@ const BalanceSection: React.FC = () => {
             Error Loading Balance
           </h3>
           <p className='text-gray-500 mb-4'>
-            {error instanceof Error ? error.message : 'Unable to load balance information'}
+            {error instanceof Error
+              ? error.message
+              : 'Unable to load balance information'}
           </p>
           <Button
             onClick={handleRefresh}

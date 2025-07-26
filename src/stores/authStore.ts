@@ -6,6 +6,7 @@ interface AuthClientState {
   user: User | null;
   isAuthenticated: boolean;
   csrfToken: string | null;
+  isLoading: boolean;
 }
 
 interface AuthActions {
@@ -21,6 +22,7 @@ const INITIAL_STATE: AuthClientState = {
   user: null,
   isAuthenticated: false,
   csrfToken: null,
+  isLoading: false,
 };
 
 export const useAuthStore = create<AuthStore>()(

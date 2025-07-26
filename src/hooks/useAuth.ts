@@ -1,7 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiService } from '@/services/api';
 import { useAuthStore } from '@/stores/authStore';
-import type { LoginFormData, PasswordChangeData, User, AuthResponse } from '@/types';
+import type {
+  LoginFormData,
+  PasswordChangeData,
+  User,
+  AuthResponse,
+} from '@/types';
 
 // Query keys for auth-related queries
 export const authKeys = {
@@ -13,7 +18,7 @@ export const authKeys = {
 // Login mutation
 export const useLogin = () => {
   const { setAuthState } = useAuthStore();
-  
+
   return useMutation({
     mutationFn: async (credentials: LoginFormData): Promise<AuthResponse> => {
       return await apiService.login(credentials);
@@ -26,7 +31,7 @@ export const useLogin = () => {
         csrfToken: authResponse.csrfToken,
       });
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Login failed:', error);
       setAuthState({
         user: null,
@@ -41,7 +46,7 @@ export const useLogin = () => {
 export const useLogout = () => {
   const queryClient = useQueryClient();
   const { clearAuth } = useAuthStore();
-  
+
   return useMutation({
     mutationFn: async () => {
       try {
@@ -53,10 +58,10 @@ export const useLogout = () => {
     onSettled: () => {
       // Clear all cached data
       queryClient.clear();
-      
+
       // Clear auth state
       clearAuth();
-      
+
       // Clear API tokens
       apiService.clearAuthToken();
     },
@@ -69,7 +74,7 @@ export const useChangePassword = () => {
     mutationFn: async (data: PasswordChangeData): Promise<void> => {
       return await apiService.changePassword(data);
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Password change failed:', error);
     },
   });
@@ -78,7 +83,7 @@ export const useChangePassword = () => {
 // Current user query
 export const useCurrentUser = () => {
   const { isAuthenticated } = useAuthStore();
-  
+
   return useQuery({
     queryKey: authKeys.user(),
     queryFn: async (): Promise<User> => {
@@ -100,7 +105,7 @@ export const useCurrentUser = () => {
 // Token validation query
 export const useValidateToken = () => {
   const { isAuthenticated } = useAuthStore();
-  
+
   return useQuery({
     queryKey: authKeys.validate(),
     queryFn: async (): Promise<User> => {
@@ -119,7 +124,7 @@ export const useValidateToken = () => {
 export const useRefreshToken = () => {
   const queryClient = useQueryClient();
   const { setAuthState } = useAuthStore();
-  
+
   return useMutation({
     mutationFn: async (): Promise<User> => {
       await apiService.refreshToken();
@@ -129,16 +134,16 @@ export const useRefreshToken = () => {
     onSuccess: (user: User) => {
       // Update user data in cache
       queryClient.setQueryData(authKeys.user(), user);
-      
+
       // Update auth state
       setAuthState({
         user,
         isAuthenticated: true,
       });
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Token refresh failed:', error);
-      
+
       // Clear all data and logout user
       queryClient.clear();
       const { clearAuth } = useAuthStore.getState();
