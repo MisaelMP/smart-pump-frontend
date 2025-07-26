@@ -1,5 +1,10 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
-import type {
+import axios, {
+  AxiosInstance,
+  AxiosResponse,
+  AxiosError,
+  InternalAxiosRequestConfig,
+} from 'axios';
+import {
   ApiResponse,
   HttpError,
   RequestConfig,
@@ -10,8 +15,13 @@ import type {
   PasswordChangeData,
   BalanceInfo,
   AccountSummary,
+  API_ENDPOINTS,
 } from '@/types';
-import { API_ENDPOINTS } from '@/types';
+
+// Extend the AxiosRequestConfig to include our custom _retry property
+interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 class ApiService {
   private client: AxiosInstance;
@@ -61,14 +71,20 @@ class ApiService {
     this.client.interceptors.response.use(
       (response: AxiosResponse<ApiResponse>) => {
         // Update CSRF token if provided
-        if (response.data.data?.csrfToken) {
-          this.csrfToken = response.data.data.csrfToken;
+        if (
+          response.data.data &&
+          typeof response.data.data === 'object' &&
+          'csrfToken' in response.data.data
+        ) {
+          this.csrfToken = (
+            response.data.data as { csrfToken: string }
+          ).csrfToken;
         }
 
         return response;
       },
       async (error: AxiosError<ApiResponse>) => {
-        const originalRequest = error.config;
+        const originalRequest = error.config as CustomAxiosRequestConfig;
 
         // Handle 401 errors with token refresh
         if (
@@ -140,8 +156,14 @@ class ApiService {
       }
 
       // Update CSRF token
-      if (response.data.data.csrfToken) {
-        this.csrfToken = response.data.data.csrfToken;
+      if (
+        response.data.data &&
+        typeof response.data.data === 'object' &&
+        'csrfToken' in response.data.data
+      ) {
+        this.csrfToken = (
+          response.data.data as { csrfToken: string }
+        ).csrfToken;
       }
 
       return response.data.data;
@@ -157,6 +179,7 @@ class ApiService {
     } catch (error) {
       // Don't throw on logout error, just clear local state
       this.csrfToken = null;
+      // eslint-disable-next-line no-console
       console.warn('Logout request failed:', error);
     }
   }

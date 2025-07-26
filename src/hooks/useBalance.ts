@@ -36,7 +36,11 @@ export const useRefreshBalance = () => {
       queryClient.setQueryData(balanceKeys.detail(), data);
     },
     onError: error => {
-      console.error('Failed to refresh balance:', error);
+      // Development logging only
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to refresh balance:', error);
+      }
     },
   });
 };

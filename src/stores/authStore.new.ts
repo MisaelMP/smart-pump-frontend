@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { User } from '@/types';
+import type { AuthState, User } from '@/types';
 
+// Pure client state interface
 interface AuthClientState {
   user: User | null;
   isAuthenticated: boolean;
   csrfToken: string | null;
-  isLoading: boolean;
 }
 
 interface AuthActions {
@@ -22,7 +22,6 @@ const INITIAL_STATE: AuthClientState = {
   user: null,
   isAuthenticated: false,
   csrfToken: null,
-  isLoading: false,
 };
 
 export const useAuthStore = create<AuthStore>()(
@@ -58,8 +57,8 @@ export const useAuthStore = create<AuthStore>()(
 
 // Selector hooks for specific parts of auth state
 export const useAuth = () => {
-  const { user, isAuthenticated, csrfToken, isLoading } = useAuthStore();
-  return { user, isAuthenticated, csrfToken, isLoading };
+  const { user, isAuthenticated, csrfToken } = useAuthStore();
+  return { user, isAuthenticated, csrfToken };
 };
 
 export const useAuthActions = () => {
@@ -71,7 +70,7 @@ export const useAuthActions = () => {
 export const usePermissions = () => {
   const { user, isAuthenticated } = useAuth();
 
-  const hasPermission = (_permission: string): boolean => {
+  const hasPermission = (permission: string): boolean => {
     if (!isAuthenticated || !user) return false;
     return user.isActive;
   };

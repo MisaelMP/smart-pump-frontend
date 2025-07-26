@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   User,
   CreditCard,
-  Settings,
   LogOut,
   ChevronDown,
-  Bell,
   Shield,
   Activity,
 } from 'lucide-react';
@@ -14,8 +12,8 @@ import { useLogout } from '@/hooks/useAuth';
 import { apiService } from '@/services/api';
 import { toast } from 'sonner';
 import type { BalanceInfo, AccountSummary } from '@/types';
-import Button from '@/components/ui/Button';
 import Logo from '@/components/ui/Logo';
+import Button from '@/components/ui/Button';
 import ProfileSection from './ProfileSection';
 import BalanceSection from './BalanceSection';
 import AccountSummarySection from './AccountSummarySection';
@@ -31,11 +29,7 @@ const Dashboard: React.FC = () => {
   >('profile');
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
-
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     if (!isAuthenticated || !user) return;
 
     setIsLoading(true);
@@ -47,18 +41,22 @@ const Dashboard: React.FC = () => {
 
       setBalance(balanceData);
       setSummary(summaryData);
-    } catch (error) {
-      console.error('Failed to load dashboard data:', error);
+    } catch (_error) {
+      // Error is handled by toast, no need to log to console in production
       toast.error('Failed to load dashboard data');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isAuthenticated, user]);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, [loadDashboardData]);
 
   const handleLogout = async () => {
     try {
       await logoutMutation.mutateAsync();
-    } catch (error) {
+    } catch (_error) {
       toast.error('Logout failed');
     }
   };
@@ -121,27 +119,33 @@ const Dashboard: React.FC = () => {
                       {user.email}
                     </div>
                   </div>
-                  <button
+                  <Button
+                    variant='ghost'
+                    size='sm'
                     onClick={() => setActiveSection('profile')}
-                    className='block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                    className='w-full justify-start text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
                   >
                     <User className='w-4 h-4 inline mr-2' />
                     Profile
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant='ghost'
+                    size='sm'
                     onClick={() => setActiveSection('balance')}
-                    className='block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                    className='w-full justify-start text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
                   >
                     <CreditCard className='w-4 h-4 inline mr-2' />
                     Balance
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant='ghost'
+                    size='sm'
                     onClick={handleLogout}
-                    className='block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                    className='w-full justify-start text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
                   >
                     <LogOut className='w-4 h-4 inline mr-2' />
                     Sign out
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
@@ -236,9 +240,13 @@ const Dashboard: React.FC = () => {
               { key: 'balance', label: 'Account Balance', icon: CreditCard },
               { key: 'summary', label: 'Account Summary', icon: Activity },
             ].map(({ key, label, icon: Icon }) => (
-              <button
+              <Button
                 key={key}
-                onClick={() => setActiveSection(key as any)}
+                variant='ghost'
+                size='sm'
+                onClick={() =>
+                  setActiveSection(key as 'profile' | 'balance' | 'summary')
+                }
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
                   activeSection === key
                     ? 'border-blue-500 text-blue-600'
@@ -247,7 +255,7 @@ const Dashboard: React.FC = () => {
               >
                 <Icon className='w-4 h-4 inline mr-2' />
                 {label}
-              </button>
+              </Button>
             ))}
           </nav>
         </div>

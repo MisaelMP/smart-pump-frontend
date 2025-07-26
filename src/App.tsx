@@ -26,9 +26,15 @@ const App: React.FC = () => {
     if (isAuthenticated && user) {
       validateToken().catch(() => {
         // Token validation failed, user will be logged out automatically
-        console.warn('Token validation failed on app startup');
+        // Development logging only
+        if (import.meta.env.DEV) {
+          // eslint-disable-next-line no-console
+          console.warn('Token validation failed on app startup');
+        }
       });
     }
+    // Only run on app startup, not when auth state changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

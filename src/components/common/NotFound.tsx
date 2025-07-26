@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Home, ArrowLeft, Search, HelpCircle } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 
 interface NotFoundProps {
   /**
@@ -46,7 +48,11 @@ export default function NotFound({
 
     if (searchQuery?.trim()) {
       // In a real app, this would navigate to search results
-      console.log('Searching for:', searchQuery);
+      // Development logging only
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.log('Searching for:', searchQuery);
+      }
       // navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
@@ -79,19 +85,16 @@ export default function NotFound({
             </div>
 
             <form onSubmit={handleSearchSubmit} className='space-y-3'>
-              <div className='relative'>
-                <input
-                  type='text'
-                  name='search'
-                  placeholder='Search for what you need...'
-                  className='input w-full pl-10'
-                  aria-label='Search'
-                />
-                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
-              </div>
-              <button type='submit' className='btn-primary w-full'>
+              <Input
+                type='text'
+                name='search'
+                placeholder='Search for what you need...'
+                leftIcon={<Search className='w-4 h-4 text-gray-400' />}
+                aria-label='Search'
+              />
+              <Button type='submit' className='w-full'>
                 Search
-              </button>
+              </Button>
             </form>
           </div>
         )}
@@ -107,13 +110,13 @@ export default function NotFound({
               {backText}
             </Link>
 
-            <button
+            <Button
+              variant='ghost'
               onClick={() => window.history.back()}
-              className='btn-outline inline-flex items-center justify-center'
+              leftIcon={<ArrowLeft className='w-4 h-4' />}
             >
-              <ArrowLeft className='w-4 h-4 mr-2' />
               Go Back
-            </button>
+            </Button>
           </div>
 
           {/* Help Link */}

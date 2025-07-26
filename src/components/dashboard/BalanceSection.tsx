@@ -19,7 +19,7 @@ const BalanceSection: React.FC = () => {
     try {
       await refreshMutation.mutateAsync();
       toast.success('Balance refreshed successfully');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to refresh balance');
     }
   };

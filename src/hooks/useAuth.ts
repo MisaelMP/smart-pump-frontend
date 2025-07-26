@@ -32,7 +32,11 @@ export const useLogin = () => {
       });
     },
     onError: error => {
-      console.error('Login failed:', error);
+      // Development logging only
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.error('Login failed:', error);
+      }
       setAuthState({
         user: null,
         isAuthenticated: false,
@@ -52,7 +56,11 @@ export const useLogout = () => {
       try {
         await apiService.logout();
       } catch (error) {
-        console.warn('Logout API call failed:', error);
+        // Development logging only
+        if (import.meta.env.DEV) {
+          // eslint-disable-next-line no-console
+          console.warn('Logout API call failed:', error);
+        }
       }
     },
     onSettled: () => {
@@ -75,7 +83,11 @@ export const useChangePassword = () => {
       return await apiService.changePassword(data);
     },
     onError: error => {
-      console.error('Password change failed:', error);
+      // Development logging only
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.error('Password change failed:', error);
+      }
     },
   });
 };
@@ -92,9 +104,13 @@ export const useCurrentUser = () => {
     enabled: isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
-    retry: (failureCount, error: any) => {
+    retry: (failureCount, error: Error) => {
       // Don't retry on auth errors
-      if (error?.response?.status === 401 || error?.response?.status === 403) {
+      const httpError = error as { response?: { status?: number } };
+      if (
+        httpError.response?.status === 401 ||
+        httpError.response?.status === 403
+      ) {
         return false;
       }
       return failureCount < 2;
@@ -142,7 +158,11 @@ export const useRefreshToken = () => {
       });
     },
     onError: error => {
-      console.error('Token refresh failed:', error);
+      // Development logging only
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.error('Token refresh failed:', error);
+      }
 
       // Clear all data and logout user
       queryClient.clear();

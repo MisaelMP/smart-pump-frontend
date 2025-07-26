@@ -138,7 +138,7 @@ export interface LoadingState {
 export interface ErrorState {
   hasError: boolean;
   message?: string;
-  details?: any;
+  details?: Record<string, unknown>;
 }
 
 // Form States
