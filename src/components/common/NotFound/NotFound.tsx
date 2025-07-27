@@ -1,9 +1,10 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home, ArrowLeft, Search, HelpCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 
-interface NotFoundProps {
+export interface NotFoundProps {
   /**
    * Custom title for the 404 page
    */
@@ -34,13 +35,13 @@ interface NotFoundProps {
  *
  * @param props - Configuration options for the NotFound component
  */
-export default function NotFound({
+const NotFound: React.FC<NotFoundProps> = ({
   title = 'Page Not Found',
   description = "Sorry, we couldn't find the page you're looking for. It might have been moved, deleted, or you may have entered the wrong URL.",
   showSearch = true,
   backUrl = '/',
   backText = 'Go Home',
-}: NotFoundProps) {
+}) => {
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -154,6 +155,7 @@ export default function NotFound({
       </footer>
     </div>
   );
-}
+};
 
+export default NotFound;
 export { NotFound };

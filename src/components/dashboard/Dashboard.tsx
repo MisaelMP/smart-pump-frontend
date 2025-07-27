@@ -8,7 +8,7 @@ import {
   Activity,
 } from 'lucide-react';
 import { useAuth } from '@/stores/authStore';
-import { useLogout } from '@/hooks/useAuth';
+import { useLogout } from '@/hooks/useAuth/useAuth';
 import { apiService } from '@/services/api';
 import { toast } from 'sonner';
 import type { BalanceInfo, AccountSummary } from '@/types';

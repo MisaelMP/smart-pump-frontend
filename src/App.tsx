@@ -7,15 +7,19 @@ import {
 } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { useAuth } from '@/stores/authStore';
-import { useValidateToken } from '@/hooks/useAuth';
+import { useValidateToken } from '@/hooks/useAuth/useAuth';
 import { ROUTES } from '@/types';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 // Lazy load components for better performance
-const LoginForm = React.lazy(() => import('@/components/auth/LoginForm'));
+const LoginForm = React.lazy(
+  () => import('@/components/auth/LoginForm/LoginForm')
+);
 const Dashboard = React.lazy(() => import('@/components/dashboard/Dashboard'));
-const NotFound = React.lazy(() => import('@/components/common/NotFound'));
+const NotFound = React.lazy(
+  () => import('@/components/common/NotFound/NotFound')
+);
 
 const App: React.FC = () => {
   const { isAuthenticated, user } = useAuth();

@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { useLogin } from '@/hooks/useAuth';
+import { useLogin } from '@/hooks/useAuth/useAuth';
 import { LoginFormSchema, type LoginFormData, ROUTES } from '@/types';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
