@@ -13,9 +13,9 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   className,
 }) => {
   const sizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-8 h-8',
-    lg: 'w-12 h-12',
+    sm: 'w-6 h-6',
+    md: 'w-10 h-10',
+    lg: 'w-16 h-16',
   };
 
   return (
@@ -27,7 +27,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     >
       <div
         className={clsx(
-          'animate-spin rounded-full border-2 border-gray-300 border-t-blue-600',
+          'animate-spin rounded-full border-3 border-gray-300 border-t-blue-600',
           sizeClasses[size]
         )}
         role='status'
@@ -42,7 +42,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 export const FullScreenLoader: React.FC<{ message?: string }> = ({
   message = 'Loading...',
 }) => (
-  <div className='min-h-screen flex items-center justify-center bg-gray-50'>
+  <div className='fixed inset-0 flex items-center justify-center bg-gray-50 z-50'>
     <LoadingSpinner size='lg' message={message} />
   </div>
 );

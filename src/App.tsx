@@ -10,7 +10,7 @@ import { useAuth } from '@/stores/authStore';
 import { useValidateToken } from '@/hooks/useAuth/useAuth';
 import { ROUTES } from '@/types';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { FullScreenLoader } from '@/components/ui/LoadingSpinner';
 
 // Lazy load components for better performance
 const LoginForm = React.lazy(
@@ -44,7 +44,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <div className='min-h-screen bg-gray-50'>
-        <Suspense fallback={<LoadingSpinner />}>
+        <Suspense fallback={<FullScreenLoader message="Loading application..." />}>
           <Routes>
             {/* Public Routes */}
             <Route
