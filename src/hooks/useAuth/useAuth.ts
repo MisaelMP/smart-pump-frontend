@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+import React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiService } from '@/services/api';
 import { useAuthStore } from '@/stores/authStore';
@@ -34,7 +36,6 @@ export const useLogin = () => {
     onError: error => {
       // Development logging only
       if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
         console.error('Login failed:', error);
       }
       setAuthState({
@@ -58,7 +59,6 @@ export const useLogout = () => {
       } catch (error) {
         // Development logging only
         if (import.meta.env.DEV) {
-          // eslint-disable-next-line no-console
           console.warn('Logout API call failed:', error);
         }
       }
@@ -85,7 +85,6 @@ export const useChangePassword = () => {
     onError: error => {
       // Development logging only
       if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
         console.error('Password change failed:', error);
       }
     },
@@ -120,9 +119,9 @@ export const useCurrentUser = () => {
 
 // Token validation query
 export const useValidateToken = () => {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, clearAuth } = useAuthStore();
 
-  return useQuery({
+  const query = useQuery({
     queryKey: authKeys.validate(),
     queryFn: async (): Promise<User> => {
       return await apiService.validateToken();
@@ -134,6 +133,31 @@ export const useValidateToken = () => {
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
   });
+
+  // Handle token validation errors
+  React.useEffect(() => {
+    if (query.error && isAuthenticated) {
+      // Clear auth state when token validation fails
+      // This handles cases like environment switches or invalid tokens
+      const httpError = query.error as { response?: { status?: number } };
+      if (
+        httpError.response?.status === 401 ||
+        httpError.response?.status === 403
+      ) {
+        clearAuth();
+        apiService.clearAuthToken();
+
+        if (import.meta.env.DEV) {
+          console.warn(
+            'Token validation failed, clearing auth state:',
+            query.error
+          );
+        }
+      }
+    }
+  }, [query.error, isAuthenticated, clearAuth]);
+
+  return query;
 };
 
 // Refresh token mutation
@@ -160,7 +184,6 @@ export const useRefreshToken = () => {
     onError: error => {
       // Development logging only
       if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
         console.error('Token refresh failed:', error);
       }
 

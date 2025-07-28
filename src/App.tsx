@@ -29,7 +29,7 @@ const App: React.FC = () => {
     // Validate token on app startup if user appears to be authenticated
     if (isAuthenticated && user) {
       validateToken().catch(() => {
-        // Token validation failed, user will be logged out automatically
+        // Token validation failed, auth state will be cleared automatically
         // Development logging only
         if (import.meta.env.DEV) {
           // eslint-disable-next-line no-console
@@ -44,7 +44,9 @@ const App: React.FC = () => {
   return (
     <Router>
       <div className='min-h-screen bg-gray-50'>
-        <Suspense fallback={<FullScreenLoader message="Loading application..." />}>
+        <Suspense
+          fallback={<FullScreenLoader message='Loading application...' />}
+        >
           <Routes>
             {/* Public Routes */}
             <Route
