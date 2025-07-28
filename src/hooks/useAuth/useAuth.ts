@@ -26,6 +26,11 @@ export const useLogin = () => {
       return await apiService.login(credentials);
     },
     onSuccess: (authResponse: AuthResponse) => {
+      // Set the auth token for subsequent requests
+      if (authResponse.accessToken) {
+        apiService.setAuthToken(authResponse.accessToken);
+      }
+      
       // Update Zustand with auth state
       setAuthState({
         user: authResponse.user,
@@ -131,7 +136,7 @@ export const useValidateToken = () => {
     gcTime: 5 * 60 * 1000, // 5 minutes
     retry: false, // Don't retry token validation
     refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
+    refetchOnReconnect: true
   });
 
   // Handle token validation errors

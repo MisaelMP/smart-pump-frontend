@@ -26,17 +26,23 @@ const App: React.FC = () => {
   const { refetch: validateToken } = useValidateToken();
 
   useEffect(() => {
-    // Validate token on app startup if user appears to be authenticated
+    // Only validate token on app startup if user appears to be authenticated
+    // Add a small delay to prevent immediate validation loops
     if (isAuthenticated && user) {
-      validateToken().catch(() => {
-        // Token validation failed, auth state will be cleared automatically
-        // Development logging only
-        if (import.meta.env.DEV) {
-          // eslint-disable-next-line no-console
-          console.warn('Token validation failed on app startup');
-        }
-      });
+      const timer = setTimeout(() => {
+        validateToken().catch(() => {
+          // Token validation failed, auth state will be cleared automatically
+          // Development logging only
+          if (import.meta.env.DEV) {
+            // eslint-disable-next-line no-console
+            console.warn('Token validation failed on app startup');
+          }
+        });
+      }, 1000); // 1 second delay
+
+      return () => clearTimeout(timer);
     }
+    return undefined;
     // Only run on app startup, not when auth state changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
