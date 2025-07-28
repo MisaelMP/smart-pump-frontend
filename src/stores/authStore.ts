@@ -27,7 +27,7 @@ const INITIAL_STATE: AuthClientState = {
 
 export const useAuthStore = create<AuthStore>()(
   persist(
-    set => ({
+    (set, get, api) => ({
       ...INITIAL_STATE,
 
       // Client state actions only
@@ -37,6 +37,8 @@ export const useAuthStore = create<AuthStore>()(
 
       clearAuth: () => {
         set(INITIAL_STATE);
+        // Use Zustand's built-in method to clear localStorage
+        api.persist.clearStorage();
       },
 
       updateUser: (user: User) => {
