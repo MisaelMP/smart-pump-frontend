@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 import type { BalanceInfo, AccountSummary } from '@/types';
 import Logo from '@/components/ui/Logo';
 import Button from '@/components/ui/Button';
+import { FullScreenLoader } from '@/components/ui/LoadingSpinner';
 import ProfileSection from './ProfileSection';
 import BalanceSection from './BalanceSection';
 import AccountSummarySection from './AccountSummarySection';
@@ -261,27 +262,22 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Dynamic Content */}
-        <div className='bg-white rounded-lg shadow'>
-          {isLoading ? (
-            <div className='p-8 text-center'>
-              <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto'></div>
-              <p className='mt-2 text-gray-500'>Loading...</p>
-            </div>
-          ) : (
-            <>
-              {activeSection === 'profile' && (
-                <ProfileSection user={user} onUserUpdate={loadDashboardData} />
-              )}
-              {activeSection === 'balance' && <BalanceSection />}
-              {activeSection === 'summary' && (
-                <AccountSummarySection
-                  summary={summary}
-                  onRefresh={loadDashboardData}
-                />
-              )}
-            </>
-          )}
-        </div>
+        {isLoading ? (
+          <FullScreenLoader message="Loading dashboard data..." />
+        ) : (
+          <div className='bg-white rounded-lg shadow'>
+            {activeSection === 'profile' && (
+              <ProfileSection user={user} onUserUpdate={loadDashboardData} />
+            )}
+            {activeSection === 'balance' && <BalanceSection />}
+            {activeSection === 'summary' && (
+              <AccountSummarySection
+                summary={summary}
+                onRefresh={loadDashboardData}
+              />
+            )}
+          </div>
+        )}
       </main>
     </div>
   );
