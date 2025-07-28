@@ -145,6 +145,8 @@ export const useValidateToken = () => {
         httpError.response?.status === 403
       ) {
         clearAuth();
+        // Use Zustand's built-in method to clear persisted storage
+        useAuthStore.persist.clearStorage();
         apiService.clearAuthToken();
 
         if (import.meta.env.DEV) {
