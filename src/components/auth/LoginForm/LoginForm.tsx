@@ -137,8 +137,9 @@ const LoginForm: React.FC = () => {
                 <button
                   type='button'
                   onClick={togglePasswordVisibility}
-                  className='text-gray-400 hover:text-gray-600 focus:outline-none'
+                  className='text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition-colors'
                   tabIndex={-1}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? (
                     <EyeOff className='h-4 w-4' />
