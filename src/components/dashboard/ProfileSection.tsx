@@ -147,11 +147,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   const onPasswordSubmit = async (data: PasswordChangeData) => {
     try {
       await changePasswordMutation.mutateAsync(data);
-      
+
       toast.success('Password Changed', {
         description: 'Your password has been successfully updated.',
       });
-      
+
       handlePasswordCancel();
     } catch (error) {
       const errorMessage =
@@ -163,7 +163,8 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         });
       } else if (errorMessage.toLowerCase().includes('weak password')) {
         setPasswordError('newPassword', {
-          message: 'Password must be at least 8 characters with uppercase, lowercase, number and special character',
+          message:
+            'Password must be at least 8 characters with uppercase, lowercase, number and special character',
         });
       } else {
         toast.error('Password Change Failed', {
@@ -176,9 +177,9 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   return (
     <div className='p-6'>
       {/* Header */}
-      <div className='flex justify-between items-center mb-6'>
+      <div className='flex-col md:flex-row flex justify-between gap-4 md:gap-0 items-center mb-6'>
         <div>
-          <h3 className='text-lg font-medium text-gray-900'>
+          <h3 className='text-lg font-medium text-gray-900 mb-4 md:mb-0'>
             Profile Information
           </h3>
           <p className='text-sm text-gray-500'>
@@ -314,7 +315,10 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
 
       {/* Password Change Form */}
       {isChangingPassword && (
-        <form onSubmit={handlePasswordSubmit(onPasswordSubmit)} className='space-y-6'>
+        <form
+          onSubmit={handlePasswordSubmit(onPasswordSubmit)}
+          className='space-y-6'
+        >
           <div>
             <h4 className='text-md font-medium text-gray-900 mb-4 flex items-center'>
               <Lock className='w-4 h-4 mr-2' />
@@ -332,7 +336,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                     onClick={() => togglePasswordVisibility('current')}
                     className='text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition-colors'
                     tabIndex={-1}
-                    aria-label={showPasswords.current ? 'Hide current password' : 'Show current password'}
+                    aria-label={
+                      showPasswords.current
+                        ? 'Hide current password'
+                        : 'Show current password'
+                    }
                   >
                     {showPasswords.current ? (
                       <EyeOff className='w-4 h-4' />
@@ -355,7 +363,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                     onClick={() => togglePasswordVisibility('new')}
                     className='text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition-colors'
                     tabIndex={-1}
-                    aria-label={showPasswords.new ? 'Hide new password' : 'Show new password'}
+                    aria-label={
+                      showPasswords.new
+                        ? 'Hide new password'
+                        : 'Show new password'
+                    }
                   >
                     {showPasswords.new ? (
                       <EyeOff className='w-4 h-4' />
@@ -379,7 +391,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                     onClick={() => togglePasswordVisibility('confirm')}
                     className='text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition-colors'
                     tabIndex={-1}
-                    aria-label={showPasswords.confirm ? 'Hide password confirmation' : 'Show password confirmation'}
+                    aria-label={
+                      showPasswords.confirm
+                        ? 'Hide password confirmation'
+                        : 'Show password confirmation'
+                    }
                   >
                     {showPasswords.confirm ? (
                       <EyeOff className='w-4 h-4' />
@@ -411,7 +427,9 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               isLoading={changePasswordMutation.isPending}
               disabled={changePasswordMutation.isPending}
             >
-              {changePasswordMutation.isPending ? 'Changing...' : 'Change Password'}
+              {changePasswordMutation.isPending
+                ? 'Changing...'
+                : 'Change Password'}
             </Button>
           </div>
         </form>
