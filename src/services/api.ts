@@ -190,8 +190,13 @@ class ApiService {
         ApiResponse<{ accessToken: string; user: User }>
       >(API_ENDPOINTS.AUTH.REFRESH);
 
-      if (!response.data.success) {
+      if (!response.data.success || !response.data.data) {
         throw new Error(response.data.message || 'Token refresh failed');
+      }
+
+      // Set the new access token for subsequent requests
+      if (response.data.data.accessToken) {
+        this.setAuthToken(response.data.data.accessToken);
       }
     } catch (error) {
       throw this.createHttpError(error as AxiosError<ApiResponse>);
